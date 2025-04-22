@@ -1,40 +1,20 @@
 <?php
+session_start();  // Khởi tạo session
+
 header("Access-Control-Allow-Origin: http://localhost:3000"); 
 header("Access-Control-Allow-Methods: POST, OPTIONS"); 
 header("Access-Control-Allow-Headers: Content-Type, X-CSRF-TOKEN"); 
 header("Access-Control-Allow-Credentials: true"); 
 header("Content-Type: application/json; charset=UTF-8");
-require_once "connect.php";
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
 
-session_start();
-
-// Kiểm tra CSRF token
-$csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-if (!$csrfToken || $csrfToken !== $_SESSION['csrf_token']) {
-    echo json_encode(['success' => false, 'message' => 'CSRF token không hợp lệ']);
-    exit;
-}
-
-// Kiểm tra dữ liệu từ client
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
-// Kiểm tra lỗi JSON
-if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(['success' => false, 'message' => 'Dữ liệu đầu vào không hợp lệ']);
-    exit;
-}
-
-// Tiến hành các bước đăng nhập, ví dụ kiểm tra email và mật khẩu
 $email = trim($data['email'] ?? '');
 $password = trim($data['matkhau'] ?? '');
 
 // Kiểm tra email và mật khẩu trong cơ sở dữ liệu
 try {
-    // Kết nối cơ sở dữ liệu
     $conn = new PDO('mysql:host=localhost;dbname=tracnghiemonline', 'root', '');
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
@@ -53,12 +33,12 @@ try {
         exit;
     }
 
-    // Kiểm tra trạng thái tài khoản
-    if ($user['trangthai'] !== 1) {
-        echo json_encode(['success' => false, 'message' => 'Tài khoản của bạn bị khóa']);
-        exit;
-    }
+    $_SESSION['user_id'] = $user['id'];  // Lưu ID người dùng vào session
 
+    // Kiểm tra quyền admin
+    $role = $user['manhomquyen']; // Kiểm tra quyền của người dùng (1: admin, 0: người dùng bình thường)
+
+    // Trả về thông tin người dùng
     echo json_encode([
         'success' => true,
         'message' => 'Đăng nhập thành công',
@@ -66,7 +46,9 @@ try {
             'id' => $user['id'],
             'email' => $user['email'],
             'hoten' => $user['hoten'],
-            'manhomquyen' => $user['manhomquyen']
+            'manhomquyen' => $role, // Trả về nhóm quyền
+            'avatar' => $user['avatar'], // Trả về avatar
+            'role' => $role // Trả về role để xử lý frontend
         ]
     ]);
 } catch (PDOException $e) {

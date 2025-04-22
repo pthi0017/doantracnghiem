@@ -52,10 +52,10 @@ const ExamPage = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  const handleAnswerSelect = (questionId, answerId) => {
+  const handleAnswerSelect = (questionId, answer) => {
     setSelectedAnswers(prev => ({
       ...prev,
-      [questionId]: answerId
+      [questionId]: answer
     }));
   };
 
@@ -99,42 +99,25 @@ const ExamPage = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const handleContact = () => {
-    navigate("/contact");
-  };
-
   if (loading) return <div className="loading">Đang tải câu hỏi...</div>;
   if (error) return <div className="error">{error}</div>;
   if (questions.length === 0) return <div className="error">Không có câu hỏi.</div>;
 
   const currentQ = questions[currentQuestion];
+  const handleGoToExam = (mamonhoc) => {
+    navigate(`/exam/${mamonhoc}`);
+  };
+
+  const handleLogin = () => {
+    navigate("/login"); // Giả sử bạn có một route đăng nhập
+  };
+
+  const handleContact = () => {
+    navigate("/contact"); // Giả sử bạn có một route liên hệ
+  };
 
   return (
     <div className="exam-container">
-      <nav className="homepage-nav">
-        <ul className="menu">
-          <li>
-            <button className="menu-btn" onClick={() => navigate("/")}>
-              Trang chủ
-            </button>
-          </li>
-          <li>
-            <button className="menu-btn" onClick={handleLogin}>
-              Đăng nhập
-            </button>
-          </li>
-          <li>
-            <button className="menu-btn" onClick={handleContact}>
-              Liên hệ
-            </button>
-          </li>
-        </ul>
-      </nav>
-
       <header className="exam-header">
         <h2>Môn: {subjectName}</h2>
         <div className="timer">Thời gian: {formatTime(timeLeft)}</div>
@@ -154,18 +137,13 @@ const ExamPage = () => {
         <h3 className="question-text">{currentQ.noidung}</h3>
 
         <div className="answers-grid">
-          {currentQ.answers.map((answer, index) => (
-            <button
-              key={answer.macautl}
-              className={`answer-btn ${
-                selectedAnswers[currentQ.macauhoi] === answer.macautl ? 'selected' : ''
-              }`}
-              onClick={() => handleAnswerSelect(currentQ.macauhoi, answer.macautl)}
-            >
-              <span className="answer-letter">{String.fromCharCode(65 + index)}</span>
-              <span className="answer-text">{answer.noidungtl}</span>
-            </button>
-          ))}
+          <input
+            type="text"
+            className="answer-input"
+            value={selectedAnswers[currentQ.macauhoi] || ''}
+            onChange={(e) => handleAnswerSelect(currentQ.macauhoi, e.target.value)}
+            placeholder="Nhập câu trả lời"
+          />
         </div>
       </div>
 
@@ -180,7 +158,7 @@ const ExamPage = () => {
 
         {currentQuestion < questions.length - 1 ? (
           <button className="nav-btn next-btn" onClick={handleNextQuestion}>
-            Câu tiếp →
+            Câu tiếp → 
           </button>
         ) : (
           <button className="nav-btn submit-btn" onClick={handleSubmit}>

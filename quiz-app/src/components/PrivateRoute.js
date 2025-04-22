@@ -1,15 +1,11 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
+// PrivateRoute.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
 const PrivateRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  
-  // Kiểm tra token và quyền người dùng
-  if (!user || !user.manhomquyen || user.manhomquyen !== 1) {
-    return <Navigate to="/login" />;
-  }
+  const isAuthenticated = localStorage.getItem('token');  // Kiểm tra xem người dùng đã đăng nhập chưa
 
-  return children; // Nếu người dùng hợp lệ, cho phép truy cập vào trang
+  return isAuthenticated ? children : <Navigate to="/login" />;  // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
 };
 
 export default PrivateRoute;

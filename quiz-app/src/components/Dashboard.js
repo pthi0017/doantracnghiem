@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FiUsers, FiFileText, FiClipboard } from "react-icons/fi";
+import { FiUsers, FiFileText } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import RoleManager from "./Auth/RoleManager";
 import './AdminDashboard.css';
 import QuestionManager from "./QuestionManager";
-import ExamManager from "./ExamManager";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer
@@ -17,6 +15,7 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [keyword, setKeyword] = useState('');
   const [subjectFilter, setSubjectFilter] = useState('');
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
   const navigate = useNavigate();
 
   // Kiểm tra nếu chưa đăng nhập thì chuyển về trang login
@@ -39,6 +38,29 @@ const AdminDashboard = () => {
     navigate('/login');
   };
 
+  // Tìm kiếm câu hỏi dựa trên từ khóa và môn học
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    axios.get('http://localhost/WEBQUIZZ/chucnang/search_cauhoi.php', {
+      params: {
+        keyword: keyword,
+        subject: subjectFilter
+      }
+    })
+    .then(res => {
+      if (res.data.success) {
+        setFilteredQuestions(res.data.data); // Cập nhật lại câu hỏi đã lọc
+      } else {
+        alert('Không có câu hỏi nào phù hợp');
+      }
+    })
+    .catch(err => {
+      console.error("Lỗi tìm kiếm:", err);
+      alert('Lỗi khi tìm kiếm');
+    });
+  };
+
   const barChartData = [
     { name: 'CN', điểm: 65 },
     { name: 'T2', điểm: 75 },
@@ -48,17 +70,6 @@ const AdminDashboard = () => {
     { name: 'T6', điểm: 90 },
     { name: 'T7', điểm: 85 },
   ];
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // Logic tìm kiếm theo từ khóa và môn học
-    // Bạn có thể sử dụng bộ lọc này trong các trang Quản lý câu hỏi và đề thi
-    console.log("Tìm kiếm theo từ khóa:", keyword, "và môn học:", subjectFilter);
-  };
 
   if (loading) {
     return <div className="flex items-center justify-center h-screen text-xl">Đang tải dữ liệu...</div>;
@@ -70,32 +81,10 @@ const AdminDashboard = () => {
       <aside className="sidebar">
         <h1>Admin Panel</h1>
         <ul>
-          <li 
-            className={currentPage === "dashboard" ? "active" : ""} 
-            onClick={() => handlePageChange("dashboard")}
-          >
-            Dashboard
-          </li>
-          <li 
-            className={currentPage === "questions" ? "active" : ""} 
-            onClick={() => handlePageChange("questions")}
-          >
-            Quản lý câu hỏi
-          </li>
-          <li 
-            className={currentPage === "exams" ? "active" : ""} 
-            onClick={() => handlePageChange("exams")}
-          >
-            Quản lý đề thi
-          </li>
-          <li 
-            className={currentPage === "roles" ? "active" : ""} 
-            onClick={() => handlePageChange("roles")}
-          >
-            Quản lý nhóm quyền
-          </li>
+          <li className={currentPage === "dashboard" ? "active" : ""} onClick={() => setCurrentPage("dashboard")}>Dashboard</li>
+          <li className={currentPage === "questions" ? "active" : ""} onClick={() => setCurrentPage("questions")}>Quản lý câu hỏi</li>
         </ul>
-        <button className="logout-btn" onClick={handleLogout}>Đăng xuất</button>
+        <button className="logout-btnn" onClick={handleLogout}>Đăng xuất</button>
       </aside>
 
       {/* Main Content */}
@@ -117,13 +106,12 @@ const AdminDashboard = () => {
                 className="subject-filter"
               >
                 <option value="">Chọn môn học</option>
-                {/* Dynamic subjects could be added here */}
                 <option value="math">Toán</option>
                 <option value="science">Khoa học</option>
               </select>
               <button type="submit" className="search-btn">Tìm kiếm</button>
             </form>
-            
+
             {/* Statistic Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="stat-card pink">
@@ -139,13 +127,6 @@ const AdminDashboard = () => {
                   <p className="stat-value">{data.cauhoi}</p>
                 </div>
                 <FiFileText className="stat-icon" />
-              </div>
-              <div className="stat-card blue">
-                <div>
-                  <p className="stat-title">Đề thi</p>
-                  <p className="stat-value">{data.dethi}</p>
-                </div>
-                <FiClipboard className="stat-icon" />
               </div>
               <div className="stat-card green">
                 <div>
@@ -176,22 +157,11 @@ const AdminDashboard = () => {
 
         {currentPage === "questions" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <QuestionManager />
+            {/* Quản lý câu hỏi */}
+            <QuestionManager filteredQuestions={filteredQuestions} />
           </div>
         )}
 
-        {currentPage === "exams" && (
-          <div className="bg-white p-6 rounded-lg shadow">
-            <ExamManager />
-          </div>
-        )}
-
-        {currentPage === "roles" && (
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Quản lý nhóm quyền</h2>
-            <RoleManager />
-          </div>
-        )}
       </main>
     </div>
   );

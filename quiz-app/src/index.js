@@ -1,17 +1,17 @@
+// index.js
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import ReactDOM from 'react-dom/client';  // Import đúng từ React 18
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
+const GOOGLE_CLIENT_ID = '377298935619-9tdhcs43dgd96ufm8p7gsq4drcq7a0vg.apps.googleusercontent.com';  // Thay thế bằng Google Client ID của bạn
+
+// Tạo root mới để render ứng dụng
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Bọc ứng dụng trong GoogleOAuthProvider và render ứng dụng
+root.render(
+  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <App />
+  </GoogleOAuthProvider>
+);

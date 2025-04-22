@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaTrashAlt } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import './QuestionManager.css';
 
 const QuestionManager = () => {
@@ -10,7 +10,7 @@ const QuestionManager = () => {
   const [keyword, setKeyword] = useState('');
   const [subject, setSubject] = useState('');
   const [subjects, setSubjects] = useState([]);
-  const navigate = useNavigate();
+  const navigate = useNavigate();  // Use useNavigate hook
 
   // Load subjects
   useEffect(() => {
@@ -75,12 +75,12 @@ const QuestionManager = () => {
   };
 
   const addQuestion = () => {
-    navigate('/add-question');
+    navigate('/add-question');  // Navigate to the Add Question page
   };
 
   return (
     <div className="question-manager">
-      <h2>Question Management</h2>
+      <h2>quản lí câu hỏi</h2>
 
       <div className="filters">
         <input
@@ -103,7 +103,7 @@ const QuestionManager = () => {
       </div>
 
       <button onClick={addQuestion} className="add-question-btn">
-        thêm câu hỏi
+        Thêm câu hỏi
       </button>
 
       {loading ? (

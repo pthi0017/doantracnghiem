@@ -1,0 +1,141 @@
+/* Reset và base styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Lớp chứa toàn bộ trang */
+.addQuestionPage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f8ff;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Tiêu đề trang */
+.header {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form container */
+.addQuestionForm {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+/* Form group styling */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-weight: bold;
+  color: #555;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Button styles */
+.formActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  flex: 1;
+}
+
+.submitBtn {
+  background-color: #4299e1;
+  color: white;
+}
+
+.submitBtn:hover {
+  background-color: #3182ce;
+}
+
+.backBtn {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.backBtn:hover {
+  background-color: #cbd5e0;
+}
+
+/* Focus styles */
+.addQuestionForm input:focus,
+.addQuestionForm select:focus,
+.addQuestionForm textarea:focus,
+.addQuestionForm button:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(70, 130, 180, 0.6);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .addQuestionPage {
+    padding: 10px;
+  }
+  
+  .header {
+    font-size: 24px;
+  }
+  
+  .addQuestionForm {
+    padding: 20px;
+    max-width: 100%;
+  }
+  
+  .formGroup input,
+  .formGroup select,
+  .formGroup textarea {
+    font-size: 14px;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+}

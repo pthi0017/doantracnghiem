@@ -1,65 +1,75 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaHome, FaEnvelope, FaSignInAlt, FaUser, FaSignOutAlt, FaChevronDown } from "react-icons/fa";
 import "./HomePage.css";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [exams, setExams] = useState([]); // Danh sách đề thi
-  const [subjects, setSubjects] = useState([]); // Danh sách môn học
-  const [selectedSubject, setSelectedSubject] = useState(null); // Môn học đã chọn
-  const [loading, setLoading] = useState(true); // Trạng thái loading
-  const [error, setError] = useState(null); // Trạng thái lỗi
+  const [subjects, setSubjects] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [user, setUser] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // Lấy dữ liệu đề thi và môn học
+  // Fetch subjects and user info
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSubjects = async () => {
       try {
-        const [examsRes, subjectsRes] = await Promise.all([
-          axios.get("http://localhost/WEBQUIZZ/Chucnang/exams_list.php"),
-          axios.get("http://localhost/WEBQUIZZ/Chucnang/subjects_list.php")
-        ]);
-
-        console.log(subjectsRes.data);  // Kiểm tra dữ liệu trả về từ API
-
-        if (subjectsRes.data.success) {
-          setExams(examsRes.data?.data || []);
-          setSubjects(subjectsRes.data?.data || []);
-        } else {
-          setError(subjectsRes.data.message || "Không thể tải danh sách môn học.");
+        const response = await axios.get("http://localhost/WEBQUIZZ/Chucnang/subjects_list.php");
+        if (response.data.success) {
+          setSubjects(response.data.data);
         }
       } catch (err) {
-        setError("Không thể tải dữ liệu. Vui lòng thử lại sau.");
-        console.error("API Error:", err);
-      } finally {
-        setLoading(false);
+        console.error("Lỗi khi lấy danh sách môn học:", err);
       }
     };
 
-    fetchData();
+    fetchSubjects();
+
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);  // Set user info after login
+    }
   }, []);
 
-  if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
-  if (error) return <div className="error">{error}</div>;
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login");
+  };
+
+  const handleSubjectSelect = (subjectId) => {
+    setSelectedSubject(subjectId);
+    navigate(`/exam/${subjectId}`);
+  };
 
   return (
-    <div className="homepage">
-      {/* Menu điều hướng */}
+    <div className="homepage-container">
       <nav className="homepage-nav">
         <ul className="menu">
           <li>
             <button className="menu-btn" onClick={() => navigate("/")}>
-              Trang chủ
+              <FaHome /> Trang chủ
             </button>
           </li>
-          <li className="dropdown">
-            <button className="menu-btn">Luyện thi</button>
-            <ul className="dropdown-menu">
+          <li>
+            <button className="menu-btn" onClick={() => navigate("/contact")}>
+              <FaEnvelope /> Liên hệ
+            </button>
+          </li>
+          <li className="dropdown" 
+              onMouseEnter={() => setShowDropdown(true)}
+              onMouseLeave={() => setShowDropdown(false)} >
+            <button className="menu-btn">
+              Luyện thi <FaChevronDown size={12} />
+            </button>
+            <ul className="dropdown-menu" style={{ opacity: showDropdown ? 1 : 0, visibility: showDropdown ? 'visible' : 'hidden' }}>
               {subjects.map((subject) => (
                 <li key={subject.mamonhoc}>
-                  <button 
-                    className="dropdown-item" 
-                    onClick={() => navigate(`/exam/${subject.mamonhoc}`)}
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleSubjectSelect(subject.mamonhoc)}
                   >
                     {subject.tenmonhoc}
                   </button>
@@ -68,28 +78,47 @@ const HomePage = () => {
             </ul>
           </li>
           <li>
-            <button className="menu-btn" onClick={() => navigate("/login")}>
-              Đăng nhập
-            </button>
-          </li>
-          <li>
-            <button className="menu-btn" onClick={() => navigate("/contact")}>
-              Liên hệ
-            </button>
+            {user ? (
+              <div className="user-menu" onClick={() => setShowDropdown(!showDropdown)}>
+                <img src={user.avatar} alt="User Avatar" className="user-avatar" />
+                <span>{user.name}</span>
+                {showDropdown && (
+                  <ul className="user-dropdown">
+                    <li>
+                      <button className="dropdown-item" onClick={() => navigate("/edit-user")}>
+                        <FaUser /> Thông tin cá nhân
+                      </button>
+                    </li>
+                    <li>
+                      <button className="dropdown-item" onClick={handleLogout}>
+                        <FaSignOutAlt /> Đăng xuất
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <button className="menu-btn" onClick={() => navigate("/login")}>
+                <FaSignInAlt /> Đăng nhập
+              </button>
+            )}
           </li>
         </ul>
       </nav>
 
-      {/* Header và chọn môn thi */}
       <header className="homepage-header">
-        <h1>Chào mừng đến với Quiz App</h1>
-
+        <h1>Hệ Thống Ôn Luyện Thi Trắc Nghiệm</h1>
+        <p>Nền tảng ôn luyện trực tuyến giúp bạn chuẩn bị tốt nhất cho các kỳ thi quan trọng.</p>
         <div className="subject-select">
-          <label>Chọn môn thi:</label>
+          <label>Chọn môn thi bạn muốn ôn luyện:</label>
           {subjects.length > 0 ? (
             <div className="subject-options">
               {subjects.map((subject) => (
-                <div key={subject.mamonhoc} className="subject-option">
+                <div
+                  key={subject.mamonhoc}
+                  className={`subject-option ${selectedSubject === subject.mamonhoc ? 'selected' : ''}`}
+                  onClick={() => setSelectedSubject(subject.mamonhoc)}
+                >
                   <input
                     type="radio"
                     id={`subject-${subject.mamonhoc}`}
@@ -98,20 +127,23 @@ const HomePage = () => {
                     checked={selectedSubject === subject.mamonhoc}
                     onChange={() => setSelectedSubject(subject.mamonhoc)}
                   />
-                  <label htmlFor={`subject-${subject.mamonhoc}`}>
-                    {subject.tenmonhoc}
-                  </label>
+                  <label htmlFor={`subject-${subject.mamonhoc}`}>{subject.tenmonhoc}</label>
                 </div>
               ))}
             </div>
           ) : (
-            <p>Không có môn học nào</p>
+            <p>Hiện chưa có môn học nào</p>
           )}
         </div>
-
-        <button className="btn start-btn" onClick={() => navigate(`/exam/${selectedSubject}`)}>
-          Bắt đầu ngay
-        </button>
+        <div className="homepage-buttons">
+          <button
+            className="btn start-btn"
+            onClick={() => selectedSubject && navigate(`/exam/${selectedSubject}`)}
+            disabled={!selectedSubject}
+          >
+            Bắt đầu thi ngay
+          </button>
+        </div>
       </header>
     </div>
   );

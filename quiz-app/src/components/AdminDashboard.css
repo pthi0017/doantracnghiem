@@ -54,22 +54,31 @@ body, html {
 }
 
 /* Logout button */
-.logout-btn {
+.logout-btnn {
   margin-top: auto;
-  background-color: #1cc4b2;
+  background-color: #3b82f6; /* Màu nền nút */
   color: white;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem; /* Giảm padding để nút nhỏ hơn */
+  font-size: 0.9rem; /* Giảm kích thước font */
   font-weight: 500;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.2s ease;
+  transition: all 0.2s;
+  width: auto; /* Đảm bảo nút co lại theo nội dung */
+  display: inline-block; /* Cho phép nút co lại theo nội dung */
+  margin: 0.5rem 0; /* Giảm margin */
+  text-align: center;
 }
 
-.logout-btn:hover {
-  background-color: #0d9488;
+/* Thêm hiệu ứng hover cho nút */
+.logout-btnn:hover {
+  background-color: #2563eb; /* Màu khi hover */
+  transform: translateY(-1px); /* Hiệu ứng nhấn nhẹ */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Thêm bóng cho nút khi hover */
 }
+
+
 
 /* Main content */
 .main {
@@ -99,7 +108,7 @@ body, html {
 .stat-card {
   padding: 1rem 1.5rem;
   border-radius: 1rem;
-  color: white;
+  color: rgb(49, 18, 18);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -125,4 +134,9 @@ body, html {
 
 .stat-icon {
   font-size: 2rem;
+}
+@media (max-width: 768px) {
+  .logout-btnn {
+    padding: 0.75rem 1.2rem; /* Điều chỉnh kích thước nút trên các thiết bị nhỏ */
+  }
 }

@@ -1,63 +1,58 @@
-/* AddExam.css */
+.add-question-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
 
-.add-exam-container {
-    padding: 24px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-  }
-  
-  .add-exam-container h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 24px;
-    text-align: center;
-  }
-  
-  .add-exam-container label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-  
-  .add-exam-container input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 16px;
-  }
-  
-  .add-exam-container button {
-    background-color: #2563eb;
-    color: white;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
-    font-size: 16px;
-  }
-  
-  .add-exam-container button:hover {
-    background-color: #1e40af;
-  }
-  
-  .add-exam-container p {
-    margin-top: 16px;
-    font-size: 16px;
-  }
-  
-  .add-exam-container p.text-green-600 {
-    color: #16a34a;
-  }
-  
-  .add-exam-container .space-y-4 {
-    margin-bottom: 20px;
-  }
-  
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+button.submit-btn {
+  width: 100%;
+  padding: 1rem;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button.submit-btn:hover {
+  background-color: #218838;
+}
+
+button.submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

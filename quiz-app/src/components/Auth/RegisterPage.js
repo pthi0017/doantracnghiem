@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import "./RegisterPage.css"; // nếu muốn tách CSS ra file riêng
+import { useNavigate } from "react-router-dom"; 
+import './RegisterPage.css'; 
 
-const RegisterPage = () => {
+const api = axios.create({
+  baseURL: 'http://localhost/WEBQUIZZ/Chucnang/',
+  withCredentials: true,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
+});
+
+export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [hoten, setHoten] = useState("");
   const [matkhau, setMatkhau] = useState("");
@@ -15,7 +25,7 @@ const RegisterPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const navigate = useNavigate(); // Khai báo useNavigate
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +45,8 @@ const RegisterPage = () => {
 
     try {
       const response = await axios.post("http://localhost/WEBQUIZZ/Chucnang/register.php", userData);
+
+      // Kiểm tra trạng thái trả về từ API
       if (response.data.status === "success") {
         setSuccessMessage("🎉 Đăng ký thành công!");
         setEmail("");
@@ -43,13 +55,14 @@ const RegisterPage = () => {
         setNgaysinh("");
         setGioitinh("");
         setSodienthoai("");
-        
-        // Chuyển hướng tới trang đăng nhập sau khi đăng ký thành công
+
+        // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
         setTimeout(() => {
-          navigate("/login"); // Chuyển hướng đến trang đăng nhập
+          navigate("/login");  // Điều hướng đến trang đăng nhập
         }, 2000); // Đợi 2 giây trước khi chuyển hướng
       }
     } catch (error) {
+      // Kiểm tra lỗi trả về từ API
       if (error.response && error.response.status === 409) {
         setErrorMessage("⚠️ Email này đã được sử dụng.");
       } else {
@@ -111,6 +124,4 @@ const RegisterPage = () => {
       </form>
     </div>
   );
-};
-
-export default RegisterPage;
+}

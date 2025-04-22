@@ -1,0 +1,121 @@
+/* EditUserPage.module.css */
+
+/* Container */
+.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 3rem;
+  background: #ebebe8;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.3s ease;
+}
+
+/* Title */
+.title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Form group */
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+/* Label styling */
+.formGroup label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+  color: #444;
+}
+.emailDisplay {
+  color: #000;  /* Màu chữ đen */
+  font-size: 1rem;
+  font-weight: 500;
+}
+/* Input and select styling */
+.input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  background-color: #fff;
+  color: #555;
+  transition: border 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 5px rgba(25, 118, 210, 0.4);
+}
+
+/* Avatar preview */
+.avatarPreview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ab5e5e;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.avatarPreview:hover {
+  border-color: #1976d2;
+  transform: scale(1.05);
+}
+
+/* Submit and Back button */
+.submitBtn, .backButton {
+  width: 100%;
+  padding: 1rem;
+  background: #4361ee;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.submitBtn:hover, .backButton:hover {
+  background-color: #4895ef;
+  transform: translateY(-2px);
+}
+
+.submitBtn:active, .backButton:active {
+  background-color: #1565c0;
+  transform: translateY(0);
+}
+
+.submitBtn:disabled, .backButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem;
+    padding: 2rem;
+  }
+
+  .input {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .submitBtn, .backButton {
+    font-size: 1rem;
+    padding: 0.9rem;
+  }
+}

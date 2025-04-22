@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { GoogleLogin } from '@react-oauth/google';  // Sử dụng thư viện Google OAuth
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-
 import './LoginPage.css';
 
+// Cấu hình axios để gọi API
 const api = axios.create({
-  baseURL: 'http://localhost/WEBQUIZZ/Chucnang/',
-  withCredentials: true, // Đảm bảo rằng cookie được gửi cùng với yêu cầu
+  baseURL: 'http://localhost/WEBQUIZZ/Chucnang/',  // URL backend PHP
+  withCredentials: true,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -17,11 +17,12 @@ const api = axios.create({
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: '', matkhau: '' });
-  const [message, setMessage] = useState({ text: '', type: '' });
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [csrfReady, setCsrfReady] = useState(false);
   const navigate = useNavigate();
 
+  // Fetch CSRF Token từ backend để bảo mật
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
@@ -29,21 +30,14 @@ export default function LoginPage() {
         api.defaults.headers.common['X-CSRF-TOKEN'] = response.data.token;
         setCsrfReady(true);
       } catch (error) {
-        console.error("Lỗi khi lấy CSRF token:", error);
-        setMessage({ 
-          text: 'Không thể kết nối đến server. Vui lòng thử lại sau.', 
-          type: 'error' 
-        });
+        console.error("CSRF token error:", error);
+        setMessage('System initializing. Please try again shortly.');
         api.defaults.headers.common['X-CSRF-TOKEN'] = 'fallback-token-' + Date.now();
         setCsrfReady(true);
       }
     };
 
     fetchCsrfToken();
-
-    return () => {
-      api.defaults.headers.common['X-CSRF-TOKEN'] = null;
-    };
   }, []);
 
   const handleChange = (e) => {
@@ -52,112 +46,151 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     if (!csrfReady) {
-      setMessage({ 
-        text: 'Hệ thống đang khởi tạo bảo mật. Vui lòng thử lại sau giây lát.', 
-        type: 'error' 
-      });
+      setMessage('System initializing. Please wait.');
       return;
     }
 
     setLoading(true);
-    setMessage({ text: '', type: '' });
+    setMessage('');
 
+    // Validation Email và Mật khẩu
     if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      setMessage({ text: 'Vui lòng nhập email hợp lệ', type: 'error' });
+      setMessage('Please enter a valid email');
       setLoading(false);
       return;
     }
 
     if (!form.matkhau || form.matkhau.length < 6) {
-      setMessage({ text: 'Mật khẩu phải có ít nhất 6 ký tự', type: 'error' });
+      setMessage('Password must be at least 6 characters');
       setLoading(false);
       return;
     }
 
     try {
-      const res = await api.post('login.php', JSON.stringify(form), {
+      // Gửi yêu cầu login với email và mật khẩu tới backend
+      const res = await api.post('login.php', JSON.stringify(form));
+      if (res.data.success) {
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        localStorage.setItem('token', res.data.token);
+        setMessage('Login successful');
+        setTimeout(() => navigate(res.data.user.role === 1 ? '/dashboard' : '/homepage'), 1000);
+      } else {
+        setMessage('Invalid email or password');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setMessage('Server connection error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Xử lý Google Login
+  const handleGoogleLogin = async (response) => {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const token = response.credential;
+
+      // Gửi token Google lên backend PHP
+      const res = await api.post('google-login.php', { 
+        token: token 
+      }, {
         headers: {
-          'X-CSRF-TOKEN': api.defaults.headers.common['X-CSRF-TOKEN'],
+          'X-CSRF-TOKEN': api.defaults.headers.common['X-CSRF-TOKEN']
         }
       });
 
       if (res.data.success) {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('token', res.data.token);
-        
-        setMessage({ text: 'Đăng nhập thành công', type: 'success' });
-
-        setTimeout(() => {
-          if (res.data.user.manhomquyen === 1) {
-            navigate('/dashboard');
-          } else {
-            navigate('/');
-          }
-        }, 1000);
+        setMessage('Google login successful');
+        setTimeout(() => navigate(res.data.user.role === 1 ? '/dashboard' : '/homepage'), 1000);
       } else {
-        setMessage({ 
-          text: res.data.message || 'Email hoặc mật khẩu không đúng', 
-          type: 'error' 
-        });
+        setMessage(res.data.error || 'Google login failed');
       }
     } catch (err) {
-      setMessage({ text: 'Lỗi kết nối máy chủ', type: 'error' });
-      console.error("Lỗi chi tiết:", err);
+      console.error('Google login error:', err);
+      setMessage('Server connection error');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-form">
-        <h2>Đăng nhập</h2>
-        {message.text && (
-          <div className={`message ${message.type}`}>
-            {message.text}
-          </div>
-        )}
-        <form onSubmit={handleLogin}>
+    <div className="login-page-container">
+      <form className="login-page-form" onSubmit={handleLogin}>
+        <h2 className="login-title">Login</h2>
+
+        {/* Hiển thị thông báo lỗi nếu có */}
+        {message && <div>{message}</div>}
+
+        {/* Form đăng nhập với email và mật khẩu */}
+        <div className="input-group">
           <input
             name="email"
             type="email"
+            className="input-field"
             value={form.email}
             onChange={handleChange}
             placeholder="Email"
-            className="input-field"
             required
-            autoFocus
+            autoComplete="email"
           />
+        </div>
+
+        <div className="input-group">
           <input
             name="matkhau"
             type="password"
+            className="input-field"
             value={form.matkhau}
             onChange={handleChange}
-            placeholder="Mật khẩu"
-            className="input-field"
+            placeholder="Password"
             required
-            minLength="6"
+            autoComplete="current-password"
           />
-          <button 
-            type="submit" 
-            className={`login-btn ${loading ? 'loading' : ''}`} 
-            disabled={loading || !csrfReady}
-          >
-            {loading ? (
-              <>
-                <span className="spinner"></span>
-                Đang đăng nhập...
-              </>
-            ) : 'Đăng nhập'}
-          </button>
-        </form>
-        <div className="register-link">
-          <p>Chưa có tài khoản? <Link to="/register">Đăng ký tại đây</Link></p>
-          <p><Link to="/forgot-password">Quên mật khẩu?</Link></p>
         </div>
-      </div>
+
+        <button 
+          className="login-btn" 
+          type="submit" 
+          disabled={loading || !csrfReady}
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+
+        {/* Google Login */}
+        <div className="divider">
+          <span>OR</span>
+        </div>
+
+        <div className="google-login-container">
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => setMessage('Google login failed')}
+            useOneTap
+            theme="filled_blue"
+            size="large"
+            text="continue_with"
+          />
+        </div>
+
+        {/* Liên kết đăng ký */}
+        <div className="register-link">
+          <p>Don't have an account? 
+            <button 
+              type="button" 
+              className="link-button"
+              onClick={() => navigate("/register")}
+            >
+              Register now
+            </button>
+          </p>
+        </div>
+      </form>
     </div>
   );
 }

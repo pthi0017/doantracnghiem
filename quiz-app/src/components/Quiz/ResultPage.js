@@ -15,12 +15,12 @@ const ResultPage = () => {
   return (
     <div className="result-container">
       <nav className="result-nav">
-        <button className="menu-btn" onClick={() => navigate("/")}>Trang chủ</button>
+        <button className="menu-btn" onClick={() => navigate("/homepage")}>Trang chủ</button>
         <button className="menu-btn" onClick={() => navigate("/contact")}>Liên hệ</button>
       </nav>
 
       <header className="result-header">
-        <h2>Kết quả thi môn: {subjectName}</h2>
+        <h2 className="result-title">Kết quả thi môn: {subjectName}</h2>
         <div className="result-score">
           <h3>Điểm: {score}%</h3>
           <p>Số câu đúng: {correctAnswers}/{totalQuestions}</p>

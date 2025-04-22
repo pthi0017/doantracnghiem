@@ -1,109 +1,179 @@
 /* Đặt màu nền cho trang */
 body {
-    background-color: #f8fafc;
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  /* Căn giữa form đăng nhập */
-  .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 0 15px;
-  }
-  
-  /* Form đăng nhập */
-  .login-form {
-    width: 100%;
-    max-width: 400px;
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Tiêu đề */
-  h2 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #007bff;
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  
-  /* Các input field */
-  .input-field {
-    width: 100%;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    font-size: 16px;
-    transition: border-color 0.3s;
-  }
-  
-  /* Hiệu ứng khi focus vào các input field */
-  .input-field:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  /* Nút đăng nhập */
-  .login-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
+  background-color: #f8fafc;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Căn giữa form đăng nhập */
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0 20px;
+}
+
+/* Form đăng nhập */
+.login-page-form {
+  width: 100%;
+  max-width: 420px;
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+/* Tiêu đề */
+.login-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #007bff;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Các input field */
+.input-field {
+  width: 100%;
+  padding: 14px 18px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  transition: border-color 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+/* Hiệu ứng khi focus vào các input field */
+.input-field:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Nút đăng nhập */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05); /* Hiệu ứng phóng to khi hover */
+}
+
+.login-btn:disabled {
+  background-color: #b3c6e7;
+  cursor: not-allowed;
+}
+
+/* Thông báo thành công hoặc lỗi */
+.message-container {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Liên kết đăng ký */
+.register-link {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 15px;
+}
+
+/* Nút đăng ký */
+.register-link button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s ease;
+}
+
+.register-link button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);  /* Hiệu ứng phóng to khi hover */
+}
+
+.register-link button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);  /* Hiệu ứng focus */
+}
+
+.register-link button:active {
+  background-color: #388e3c;
+  transform: scale(1);  /* Khi nhấn, nút trở lại kích thước bình thường */
+}
+
+/* Thêm icon trước chữ "Đăng ký ngay" nếu cần */
+.register-link button::before {
+  content: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Checkmark_green.svg/2048px-Checkmark_green.svg.png');
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* Cập nhật với Forced Colors Mode */
+@media (forced-colors: active) {
+  /* Các kiểu dành cho chế độ màu bắt buộc */
+  body {
+    background-color: black;
     color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s;
   }
-  
-  .login-btn:hover {
+
+  .login-page-form {
+    background-color: #222;
+    color: white;
+    box-shadow: none;
+  }
+
+  .input-field {
+    background-color: #333;
+    border-color: #777;
+    color: white;
+  }
+
+  .input-field:focus {
+    border-color: #f9f9f9;
+  }
+
+  .login-btn {
     background-color: #0056b3;
   }
-  
-  /* Nút đang tải */
+
   .login-btn:disabled {
-    background-color: #b3c6e7;
-    cursor: not-allowed;
+    background-color: #777;
   }
-  
-  /* Thông báo thành công hoặc lỗi */
-  .message {
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    font-size: 14px;
+
+  .message-container {
+    color: white;
   }
-  
-  .success {
-    background-color: #d4edda;
-    color: #155724;
+
+  .register-link button {
+    background-color: #28a745;
   }
-  
-  .error {
-    background-color: #f8d7da;
-    color: #721c24;
-  }
-  
-  /* Liên kết đăng ký */
-  .register-link {
-    text-align: center;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-  
-  .register-link a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .register-link a:hover {
-    text-decoration: underline;
-  }
-  
+}

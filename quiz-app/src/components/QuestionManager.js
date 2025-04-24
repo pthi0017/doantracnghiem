@@ -61,19 +61,22 @@ const QuestionManager = () => {
     if (window.confirm('Are you sure you want to delete this question?')) {
       axios.get(`http://localhost/WEBQUIZZ/Chucnang/delete_cauhoi.php?id=${id}`)
         .then(res => {
+          console.log("Delete response:", res);  // Gỡ lỗi tại đây
+  
           if (res.data.status === 'success') {
             alert('Question deleted successfully.');
             setQuestions(prev => prev.filter(q => q.macauhoi !== id));
           } else {
-            alert('Delete failed: ' + res.data.message);
+            alert('Delete failed: ' + (res.data.message || 'Unknown error'));
           }
         })
         .catch(err => {
           console.error('Error deleting question:', err);
+          alert('Error deleting question.');
         });
     }
   };
-
+  
   const addQuestion = () => {
     navigate('/add-question');  // Navigate to the Add Question page
   };

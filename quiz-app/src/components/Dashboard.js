@@ -50,9 +50,10 @@ const AdminDashboard = () => {
     })
     .then(res => {
       if (res.data.success) {
-        setFilteredQuestions(res.data.data); // Cập nhật lại câu hỏi đã lọc
+        setFilteredQuestions(res.data.data); // Cập nhật danh sách câu hỏi
       } else {
         alert('Không có câu hỏi nào phù hợp');
+        setFilteredQuestions([]); // Xóa danh sách nếu không có kết quả
       }
     })
     .catch(err => {
@@ -92,25 +93,34 @@ const AdminDashboard = () => {
         {currentPage === "dashboard" && (
           <>
             <h1 className="welcome-text">Chào mừng trở lại!</h1>
+            {/* Search Form */}
             <form onSubmit={handleSearch} className="search-form">
-              <input 
-                type="text" 
-                placeholder="Tìm kiếm..." 
-                className="search-input" 
-                value={keyword} 
-                onChange={(e) => setKeyword(e.target.value)} 
-              />
               <select 
                 value={subjectFilter} 
                 onChange={(e) => setSubjectFilter(e.target.value)} 
                 className="subject-filter"
               >
-                <option value="">Chọn môn học</option>
-                <option value="math">Toán</option>
-                <option value="science">Khoa học</option>
+                <option value="">Tất cả môn học</option>
+                <option value="Toán">Toán</option>
+                <option value="Khoa học">Khoa học</option>
+                <option value="Lịch sử">Lịch sử</option>
               </select>
               <button type="submit" className="search-btn">Tìm kiếm</button>
             </form>
+
+            {/* Display Filtered Questions */}
+            {filteredQuestions.length > 0 && (
+              <div className="question-list">
+                <h3 className="text-lg font-bold mb-4">Danh sách câu hỏi:</h3>
+                <ul>
+                  {filteredQuestions.map((question, index) => (
+                    <li key={index} className="question-item">
+                      {question.content} {/* Hiển thị nội dung câu hỏi */}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Statistic Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

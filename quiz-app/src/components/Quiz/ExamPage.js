@@ -52,10 +52,10 @@ const ExamPage = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  const handleAnswerSelect = (questionId, answer) => {
+  const handleAnswerSelect = (questionId, answerId) => {
     setSelectedAnswers(prev => ({
       ...prev,
-      [questionId]: answer
+      [questionId]: answerId
     }));
   };
 
@@ -83,13 +83,13 @@ const ExamPage = () => {
 
   const handleSubmit = () => {
     const score = calculateScore();
-    navigate(`/result/${subjectId}`, { 
-      state: { 
+    navigate(`/result/${subjectId}`, {
+      state: {
         score,
         totalQuestions: questions.length,
         correctAnswers: Math.round((score / 100) * questions.length),
         subjectName
-      } 
+      }
     });
   };
 
@@ -104,17 +104,6 @@ const ExamPage = () => {
   if (questions.length === 0) return <div className="error">Không có câu hỏi.</div>;
 
   const currentQ = questions[currentQuestion];
-  const handleGoToExam = (mamonhoc) => {
-    navigate(`/exam/${mamonhoc}`);
-  };
-
-  const handleLogin = () => {
-    navigate("/login"); // Giả sử bạn có một route đăng nhập
-  };
-
-  const handleContact = () => {
-    navigate("/contact"); // Giả sử bạn có một route liên hệ
-  };
 
   return (
     <div className="exam-container">
@@ -124,8 +113,8 @@ const ExamPage = () => {
       </header>
 
       <div className="progress-bar">
-        <div 
-          className="progress-fill" 
+        <div
+          className="progress-fill"
           style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
         ></div>
       </div>
@@ -137,20 +126,25 @@ const ExamPage = () => {
         <h3 className="question-text">{currentQ.noidung}</h3>
 
         <div className="answers-grid">
-          <input
-            type="text"
-            className="answer-input"
-            value={selectedAnswers[currentQ.macauhoi] || ''}
-            onChange={(e) => handleAnswerSelect(currentQ.macauhoi, e.target.value)}
-            placeholder="Nhập câu trả lời"
-          />
+          {currentQ.answers.map((answer) => (
+            <label key={answer.macautl}>
+              <input
+                type="radio"
+                name={`question-${currentQ.macauhoi}`}
+                value={answer.macautl}
+                checked={selectedAnswers[currentQ.macauhoi] === answer.macautl}
+                onChange={() => handleAnswerSelect(currentQ.macauhoi, answer.macautl)}
+              />
+              {answer.noidungtl}
+            </label>
+          ))}
         </div>
       </div>
 
       <div className="navigation-buttons">
-        <button 
-          className="nav-btn prev-btn" 
-          onClick={handlePrevQuestion} 
+        <button
+          className="nav-btn prev-btn"
+          onClick={handlePrevQuestion}
           disabled={currentQuestion === 0}
         >
           ← Câu trước

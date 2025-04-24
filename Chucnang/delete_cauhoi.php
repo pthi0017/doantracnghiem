@@ -1,24 +1,54 @@
 <?php
-include('connect'); // Kết nối cơ sở dữ liệu
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST");
-if (isset($_GET['id'])) {
-    $id = $_GET['id']; // Lấy ID câu hỏi từ tham số GET
 
-    $sql = "DELETE FROM macauhoi WHERE macauhoi = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
+include('connect.php'); // Biến $pdo đã được khai báo ở đây
 
-    if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "message" => "Câu hỏi đã được xóa."]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "Xóa câu hỏi thất bại."]);
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $id = intval($_GET['id']);
+
+    try {
+        // Bắt đầu transaction để đảm bảo tính toàn vẹn
+        $pdo->beginTransaction();
+
+        // 1. Xóa chitietketqua liên quan đến các đáp án trong câu hỏi này
+        $deleteDetails = $pdo->prepare("
+            DELETE FROM chitietketqua 
+            WHERE dapanchon IN (SELECT macautl FROM cautraloi WHERE macauhoi = :id)
+        ");
+        $deleteDetails->bindParam(':id', $id, PDO::PARAM_INT);
+        $deleteDetails->execute();
+
+        // 2. Xóa các đáp án liên quan
+        $deleteAnswers = $pdo->prepare("DELETE FROM cautraloi WHERE macauhoi = :id");
+        $deleteAnswers->bindParam(':id', $id, PDO::PARAM_INT);
+        $deleteAnswers->execute();
+
+        // 3. Xóa câu hỏi
+        $deleteQuestion = $pdo->prepare("DELETE FROM cauhoi WHERE macauhoi = :id");
+        $deleteQuestion->bindParam(':id', $id, PDO::PARAM_INT);
+        $deleteQuestion->execute();
+
+        // Kết thúc transaction
+        $pdo->commit();
+
+        echo json_encode([
+            "status" => "success",
+            "message" => "Câu hỏi và các dữ liệu liên quan đã được xóa thành công."
+        ]);
+    } catch (PDOException $e) {
+        $pdo->rollBack(); // Hoàn tác nếu có lỗi
+        echo json_encode([
+            "status" => "error",
+            "message" => "Lỗi CSDL: " . $e->getMessage()
+        ]);
     }
-
-    $stmt->close();
+} else {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Tham số ID không hợp lệ hoặc bị thiếu."
+    ]);
 }
-
-$conn->close();
 ?>

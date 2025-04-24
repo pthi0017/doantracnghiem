@@ -28,8 +28,9 @@ $stmt = $conn->prepare($sql);
 
 // Gắn giá trị vào các tham số nếu có
 if ($subject) {
-    $stmt->bindParam(':subject', $subject, PDO::PARAM_INT);
+    $stmt->bindParam(':subject', $subject, PDO::PARAM_STR); // sửa kiểu dữ liệu
 }
+
 if ($keyword) {
     $stmt->bindValue(':keyword', '%'.$keyword.'%', PDO::PARAM_STR);
 }

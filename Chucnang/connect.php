@@ -1,24 +1,21 @@
 <?php
+// Thông tin kết nối cơ sở dữ liệu
 $host = "localhost";
-$username = "root";
-$password = "";
-$database = "tracnghiemonline";
+$username = "root";  // Thay đổi nếu cần
+$password = "";      // Thay đổi nếu cần
+$database = "tracnghiemonline"; // Tên cơ sở dữ liệu của bạn
 
 try {
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$database;charset=utf8mb4",
-        $username,
-        $password,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]
-    );
+    // Tạo kết nối PDO
+    $conn = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
+    
+    // Thiết lập chế độ báo lỗi
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    error_log("Lỗi kết nối DB: " . $e->getMessage());
+    // Ghi lại lỗi kết nối và trả về thông báo lỗi
+    error_log("Lỗi kết nối CSDL: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Lỗi kết nối CSDL"]);
+    echo json_encode(["success" => false, "message" => "Lỗi kết nối cơ sở dữ liệu"]);
     exit;
 }
 ?>

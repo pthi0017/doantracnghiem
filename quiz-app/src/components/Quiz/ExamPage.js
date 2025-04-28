@@ -9,7 +9,7 @@ const ExamPage = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 phút
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 minutes
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [subjectName, setSubjectName] = useState('');
@@ -105,6 +105,8 @@ const ExamPage = () => {
 
   const currentQ = questions[currentQuestion];
 
+  const alphabet = ['A', 'B', 'C', 'D']; // Answer options as A, B, C, D
+
   return (
     <div className="exam-container">
       <header className="exam-header">
@@ -125,9 +127,9 @@ const ExamPage = () => {
         </div>
         <h3 className="question-text">{currentQ.noidung}</h3>
 
-        <div className="answers-grid">
-          {currentQ.answers.map((answer) => (
-            <label key={answer.macautl}>
+        <div className="answers-list">
+          {currentQ.answers.map((answer, index) => (
+            <label key={answer.macautl} className="answer-btn">
               <input
                 type="radio"
                 name={`question-${currentQ.macauhoi}`}
@@ -135,7 +137,7 @@ const ExamPage = () => {
                 checked={selectedAnswers[currentQ.macauhoi] === answer.macautl}
                 onChange={() => handleAnswerSelect(currentQ.macauhoi, answer.macautl)}
               />
-              {answer.noidungtl}
+              <span className="answer-letter">{alphabet[index]}:</span> <span className="answer-text">{answer.noidungtl}</span>
             </label>
           ))}
         </div>

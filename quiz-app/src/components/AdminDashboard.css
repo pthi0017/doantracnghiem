@@ -69,28 +69,29 @@ body, html {
 
 /* Logout Button */
 .logout-btnn {
-  padding: 0.75rem 1.5rem;
-  background-color: #ef4444; /* Màu đỏ nổi bật */
+  display: block; /* Đảm bảo nút chiếm toàn bộ chiều rộng */
+  width: 100%; /* Độ rộng bằng với các nút khác */
+  padding: 0.75rem 1rem;
+  background-color: transparent; /* Đặt nền trong suốt */
   color: white;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: left; /* Căn giống các nút khác */
+  margin-top: 1rem; /* Thêm khoảng cách phía trên nếu cần */
 }
 
 .logout-btnn:hover {
-  background-color: #dc2626; /* Màu đỏ đậm hơn khi hover */
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background-color: #334155; /* Màu nền khi hover */
+  transform: scale(1.05); /* Hiệu ứng phóng to */
 }
 
 .logout-btnn:active {
-  background-color: #b91c1c; /* Màu đỏ đậm hơn khi nhấn */
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #3b82f6; /* Màu nền khi nhấn */
+  transform: scale(1); /* Trở về kích thước ban đầu */
 }
 
 /* Main content */

@@ -1,209 +1,198 @@
 /* ExamPage.css */
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --danger-color: #dc3545;
-    --success-color: #28a745;
-    --white: #ffffff;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease-in-out;
-  }
-  
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --danger-color: #dc3545;
+  --success-color: #28a745;
+  --white: #ffffff;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease-in-out;
+}
+
+.exam-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+  color: var(--dark-color);
+  font-family: 'Roboto', sans-serif;
+  border: 1px solid #ddd;
+}
+
+.exam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e6e6e6;
+  padding-bottom: 1rem;
+}
+
+.exam-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.timer {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--danger-color);
+}
+
+.question-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+  border: 1px solid #ddd;
+}
+
+.question-text {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+.answers-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.answer-btn {
+  width: 100%;
+  padding: 1.2rem;
+  text-align: left;
+  background: var(--light-color);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.answer-btn:hover {
+  background: #f1f3f5;
+}
+
+.answer-btn.selected {
+  background: var(--primary-color);
+  color: var(--white);
+  border-color: var(--primary-color);
+}
+
+.answer-letter {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.answer-text {
+  font-size: 1.2rem;
+  color: var(--dark-color);
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.nav-btn {
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  font-size: 1.1rem;
+}
+
+.prev-btn {
+  background: var(--light-color);
+  color: var(--dark-color);
+}
+
+.next-btn,
+.submit-btn {
+  background: var(--success-color);
+  color: var(--white);
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
   .exam-container {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: var(--white);
-    border-radius: 12px;
-    box-shadow: var(--box-shadow);
-    color: var(--dark-color);
-    font-family: 'Roboto', sans-serif;
-    border: 1px solid #ddd;
-  }
-  
-  .exam-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid #e6e6e6;
-    padding-bottom: 1rem;
-  }
-  
-  .exam-header h2 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: var(--primary-color);
-    font-weight: 600;
-  }
-  
-  .timer {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--danger-color);
-  }
-  
-  .question-progress {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 1.2rem;
-    color: var(--dark-color);
-  }
-  
-  .question-card {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: var(--box-shadow);
-    margin-bottom: 2rem;
-    border: 1px solid #ddd;
-  }
-  
-  .question-text {
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
-    color: var(--dark-color);
-    font-weight: 500;
-  }
-  
-  .answers-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .answers-list li {
-    margin-bottom: 1rem;
-  }
-  
-  .answer-btn {
-    width: 100%;
-    padding: 1.2rem;
-    text-align: left;
-    background: var(--light-color);
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 1rem;
-  }
-  
-  .answer-btn:hover {
-    background: #f1f3f5;
-  }
-  
-  .answer-btn.selected {
-    background: var(--primary-color);
-    color: var(--white);
-    border-color: var(--primary-color);
-  }
-  
-  .answer-letter {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: var(--primary-color);
-  }
-  
-  .answer-text {
-    font-size: 1.2rem;
-    color: var(--dark-color);
-  }
-  
-  .navigation-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-  }
-  
-  .nav-btn {
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    font-size: 1.1rem;
-  }
-  
-  .prev-btn {
-    background: var(--light-color);
-    color: var(--dark-color);
-  }
-  
-  .next-btn,
-  .submit-btn {
-    background: var(--success-color);
-    color: var(--white);
-  }
-  
-  .nav-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  @media (max-width: 768px) {
-    .exam-container {
       padding: 1.5rem;
       margin: 1.5rem;
-    }
-  
-    .question-card {
+  }
+
+  .question-card {
       padding: 1.5rem;
-    }
-  
-    .exam-header h2 {
+  }
+
+  .exam-header h2 {
       font-size: 1.6rem;
-    }
-  
-    .timer {
+  }
+
+  .timer {
       font-size: 1.2rem;
-    }
-  
-    .question-text {
+  }
+
+  .question-text {
       font-size: 1.2rem;
-    }
-  
-    .answer-btn {
+  }
+
+  .answer-btn {
       font-size: 1rem;
-    }
-  
-    .nav-btn {
+  }
+
+  .nav-btn {
       font-size: 1rem;
       padding: 0.8rem 1.5rem;
-    }
   }
-  
-  @media (max-width: 480px) {
-    .exam-container {
+}
+
+@media (max-width: 480px) {
+  .exam-container {
       padding: 1rem;
       margin: 1rem;
-    }
-  
-    .question-card {
+  }
+
+  .question-card {
       padding: 1rem;
-    }
-  
-    .exam-header h2 {
+  }
+
+  .exam-header h2 {
       font-size: 1.4rem;
-    }
-  
-    .timer {
+  }
+
+  .timer {
       font-size: 1rem;
-    }
-  
-    .answer-btn {
+  }
+
+  .answer-btn {
       font-size: 0.9rem;
-    }
-  
-    .nav-btn {
+  }
+
+  .nav-btn {
       font-size: 0.9rem;
       padding: 0.7rem 1.3rem;
-    }
   }
-  
+}

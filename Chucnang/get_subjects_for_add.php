@@ -4,9 +4,11 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
+// Bao gồm kết nối cơ sở dữ liệu
 require_once "connect.php";
 
 try {
+    // Câu truy vấn lấy môn học và số lượng đề thi
     $sql = "SELECT m.mamonhoc, m.tenmonhoc, COUNT(d.made) AS so_de_thi
             FROM monhoc m
             LEFT JOIN dethi d ON m.mamonhoc = d.monthi AND d.trangthai = 1
@@ -18,7 +20,6 @@ try {
     
     $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Kiểm tra xem dữ liệu trả về có phải là mảng và không rỗng
     if (is_array($subjects) && count($subjects) > 0) {
         echo json_encode([
             "success" => true,
@@ -32,6 +33,8 @@ try {
     }
 
 } catch (PDOException $e) {
+    // Ghi lỗi chi tiết và trả về thông báo lỗi
+    error_log("Lỗi khi truy vấn cơ sở dữ liệu: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         "success" => false,

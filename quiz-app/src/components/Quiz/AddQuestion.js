@@ -47,6 +47,10 @@ const AddQuestionPage = () => {
           } else {
             alert('Lỗi tải chương');
           }
+        })
+        .catch(err => {
+          alert('Lỗi tải chương');
+          console.error(err);
         });
     }
   }, [subject]);
@@ -86,6 +90,10 @@ const AddQuestionPage = () => {
         } else {
           alert('Tạo câu hỏi thất bại');
         }
+      })
+      .catch(err => {
+        alert('Lỗi khi tạo câu hỏi');
+        console.error(err);
       });
   };
 

@@ -44,6 +44,11 @@ const HomePage = () => {
     navigate(`/exam/${subjectId}`);
   };
 
+  // Toggle dropdown visibility
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
+
   return (
     <div className="homepage-container">
       <nav className="homepage-nav">
@@ -58,28 +63,28 @@ const HomePage = () => {
               <FaEnvelope /> Liên hệ
             </button>
           </li>
-          <li className="dropdown" 
-              onMouseEnter={() => setShowDropdown(true)}
-              onMouseLeave={() => setShowDropdown(false)} >
-            <button className="menu-btn">
+          <li className="dropdown">
+            <button className="menu-btn" onClick={handleDropdownToggle}>
               Luyện thi <FaChevronDown size={12} />
             </button>
-            <ul className="dropdown-menu" style={{ opacity: showDropdown ? 1 : 0, visibility: showDropdown ? 'visible' : 'hidden' }}>
-              {subjects.map((subject) => (
-                <li key={subject.mamonhoc}>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => handleSubjectSelect(subject.mamonhoc)}
-                  >
-                    {subject.tenmonhoc}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {showDropdown && (
+              <ul className="dropdown-menu">
+                {subjects.map((subject) => (
+                  <li key={subject.mamonhoc}>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => handleSubjectSelect(subject.mamonhoc)}
+                    >
+                      {subject.tenmonhoc}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
           <li>
             {user ? (
-              <div className="user-menu" onClick={() => setShowDropdown(!showDropdown)}>
+              <div className="user-menu">
                 <img src={user.avatar} alt="User Avatar" className="user-avatar" />
                 <span>{user.name}</span>
                 {showDropdown && (

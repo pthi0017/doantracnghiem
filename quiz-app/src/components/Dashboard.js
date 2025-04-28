@@ -83,9 +83,11 @@ const AdminDashboard = () => {
         <h1>Admin Panel</h1>
         <ul>
           <li className={currentPage === "dashboard" ? "active" : ""} onClick={() => setCurrentPage("dashboard")}>Dashboard</li>
+          
           <li className={currentPage === "questions" ? "active" : ""} onClick={() => setCurrentPage("questions")}>Quản lý câu hỏi</li>
+          <button className="logout-btnn" onClick={handleLogout}>Đăng xuất</button>
         </ul>
-        <button className="logout-btnn" onClick={handleLogout}>Đăng xuất</button>
+        
       </aside>
 
       {/* Main Content */}
@@ -97,7 +99,10 @@ const AdminDashboard = () => {
             <form onSubmit={handleSearch} className="search-form">
               <select 
                 value={subjectFilter} 
-                onChange={(e) => setSubjectFilter(e.target.value)} 
+                onChange={(e) => {
+                  setSubjectFilter(e.target.value);     // Gán bộ lọc
+                  setCurrentPage("questions");          // Chuyển sang tab "Quản lý câu hỏi"
+                }}                 
                 className="subject-filter"
               >
                 <option value="">Tất cả môn học</option>

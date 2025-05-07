@@ -31,7 +31,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />  {/* Trang chủ */}
-          
+          <Route path="/homepage" element={<HomePage />} />  {/* Trang chính */}
           {/* Auth routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

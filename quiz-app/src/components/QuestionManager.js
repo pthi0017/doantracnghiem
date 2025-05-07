@@ -64,6 +64,7 @@ const QuestionManager = () => {
     if (window.confirm('Bạn có chắc muốn xóa câu hỏi này không?')) {
       axios.get(`http://localhost/WEBQUIZZ/Chucnang/delete_cauhoi.php?id=${id}`)
         .then(res => {
+          console.log('Response từ API:', res.data);  // Kiểm tra phản hồi từ API
           if (res.data.status === 'success') {
             alert('Câu hỏi đã được xóa thành công.');
             setQuestions(prev => prev.filter(q => q.macauhoi !== id)); // Xóa câu hỏi khỏi danh sách
@@ -73,10 +74,11 @@ const QuestionManager = () => {
         })
         .catch(err => {
           console.error('Lỗi khi xóa câu hỏi:', err);
-          alert('Lỗi khi xóa câu hỏi.');
+          alert('Lỗi khi xóa câu hỏi. Chi tiết: ' + err.message);  // In chi tiết lỗi khi không thể kết nối với API
         });
     }
   };
+  
 
   // Thêm câu hỏi
   const addQuestion = () => {

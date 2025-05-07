@@ -30,40 +30,49 @@ try {
             WHERE macauhoi = :macauhoi";
 
     $stmt = $conn->prepare($sql);
-
-    // Gắn các tham số vào câu truy vấn
     $stmt->bindParam(':macauhoi', $macauhoi, PDO::PARAM_INT);
     $stmt->bindParam(':noidung', $noidung, PDO::PARAM_STR);
     $stmt->bindParam(':dokho', $dokho, PDO::PARAM_INT);
     $stmt->bindParam(':mamonhoc', $mamonhoc, PDO::PARAM_INT);
     $stmt->bindParam(':machuong', $machuong, PDO::PARAM_INT);
-
-    // Thực thi câu truy vấn
     $stmt->execute();
 
-    // Cập nhật hoặc thêm các đáp án vào bảng cautraloi
-    $updateAnswersSQL = "UPDATE cautraloi 
-                         SET noidungtl = :answerA, ladapan = :correctAnswer 
-                         WHERE macauhoi = :macauhoi AND ladapan = 1";  // assuming ladapan = 1 for correct answer
+    // Cập nhật đáp án
+    $updateAnswerSQL = "UPDATE cautraloi 
+                        SET noidungtl = :answerA 
+                        WHERE macauhoi = :macauhoi AND ladapan = 1"; // Update answer A
+    $stmtAnswerA = $conn->prepare($updateAnswerSQL);
+    $stmtAnswerA->bindParam(':macauhoi', $macauhoi, PDO::PARAM_INT);
+    $stmtAnswerA->bindParam(':answerA', $answers['A'], PDO::PARAM_STR);
+    $stmtAnswerA->execute();
 
-    $stmtAnswers = $conn->prepare($updateAnswersSQL);
-    $stmtAnswers->bindParam(':macauhoi', $macauhoi, PDO::PARAM_INT);
-    $stmtAnswers->bindParam(':answerA', $answers['A'], PDO::PARAM_STR);
-    $stmtAnswers->bindParam(':correctAnswer', $answers['correct'], PDO::PARAM_INT);
+    // Repeat for B, C, and D
+    $stmtAnswerB = $conn->prepare($updateAnswerSQL);
+    $stmtAnswerB->bindParam(':answerB', $answers['B'], PDO::PARAM_STR);
+    $stmtAnswerB->execute();
 
-    $stmtAnswers->execute();
+    $stmtAnswerC = $conn->prepare($updateAnswerSQL);
+    $stmtAnswerC->bindParam(':answerC', $answers['C'], PDO::PARAM_STR);
+    $stmtAnswerC->execute();
 
-    // Kiểm tra nếu có dòng bị ảnh hưởng
-    if ($stmt->rowCount() > 0 || $stmtAnswers->rowCount() > 0) {
-        echo json_encode(["success" => true, "message" => "Cập nhật câu hỏi thành công."]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Không tìm thấy câu hỏi hoặc không có thay đổi."]);
-    }
+    $stmtAnswerD = $conn->prepare($updateAnswerSQL);
+    $stmtAnswerD->bindParam(':answerD', $answers['D'], PDO::PARAM_STR);
+    $stmtAnswerD->execute();
+
+    // Cập nhật đáp án đúng
+    $updateCorrectAnswerSQL = "UPDATE cautraloi 
+                               SET ladapan = :correctAnswer 
+                               WHERE macauhoi = :macauhoi AND ladapan = :correctAnswerOld";
+    $stmtCorrectAnswer = $conn->prepare($updateCorrectAnswerSQL);
+    $stmtCorrectAnswer->bindParam(':macauhoi', $macauhoi, PDO::PARAM_INT);
+    $stmtCorrectAnswer->bindParam(':correctAnswer', $answers['correct'], PDO::PARAM_INT);
+    $stmtCorrectAnswer->bindParam(':correctAnswerOld', $answers['correctOld'], PDO::PARAM_INT);
+    $stmtCorrectAnswer->execute();
+
+    echo json_encode(["success" => true, "message" => "Cập nhật câu hỏi thành công."]);
 
 } catch (PDOException $e) {
-    // Ghi lại lỗi và trả về thông báo lỗi
     error_log("Lỗi khi cập nhật câu hỏi: " . $e->getMessage());
-    http_response_code(500);
     echo json_encode(["success" => false, "error" => "Database Error: " . $e->getMessage()]);
 }
 ?>

@@ -19,12 +19,15 @@ const EditQuestionPage = () => {
     B: '',
     C: '',
     D: '',
-    correct: 'A',
+    correct: 'A', // Default is A
+    correctOld: 1 // Default value for the correct answer (A = 1)
   });
 
+  // Fetch data from API when page loads
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch subjects
         const subjectsRes = await axios.get('http://localhost/WEBQUIZZ/Chucnang/get_monhoc.php');
         if (subjectsRes.data.success) {
           setSubjects(subjectsRes.data.data);
@@ -32,8 +35,10 @@ const EditQuestionPage = () => {
           alert('Lỗi tải môn học');
         }
 
+        // Fetch question data
         const questionRes = await axios.get(`http://localhost/WEBQUIZZ/Chucnang/lay_cauhoi.php?id=${questionId}`);
-        
+        console.log(questionRes.data); // Kiểm tra dữ liệu trả về
+
         if (questionRes.data.success) {
           const data = questionRes.data.data;
           setQuestion(data.noidung);
@@ -41,29 +46,36 @@ const EditQuestionPage = () => {
           setSubject(data.mamonhoc);
           setChapter(data.machuong);
 
-          // Cập nhật đáp án từ API
+          console.log("Answer A:", data.answerA); // Check answers
+          console.log("Answer B:", data.answerB);
+          console.log("Answer C:", data.answerC);
+          console.log("Answer D:", data.answerD);
+
+          // Update answers from API response
           setAnswers({
             A: data.answerA || '',
-            B: data.answerA || '',  // Placeholder: If only one answer, set others to A
-            C: data.answerA || '',
-            D: data.answerA || '',
+            B: data.answerB || '',
+            C: data.answerC || '',
+            D: data.answerD || '',
             correct: data.correctAnswer === 1 ? 'A' : data.correctAnswer === 2 ? 'B' : data.correctAnswer === 3 ? 'C' : 'D',
+            correctOld: data.correctAnswer // Store correct answer from API
           });
         } else {
           alert('Câu hỏi không tồn tại');
-          navigate('/question-manager'); // Điều hướng về trang quản lý câu hỏi nếu không tìm thấy
+          navigate('/question-manager'); // Navigate to the question manager if not found
         }
       } catch (err) {
-        console.error('Lỗi khi tải dữ liệu:', err);
+        console.error('Lỗi khi tải dữ liệu:', err); // Show error in console
         alert('Lỗi khi tải dữ liệu');
       } finally {
-        setLoading(false); // Kết thúc trạng thái tải
+        setLoading(false); // Finish loading
       }
     };
 
     fetchData();
   }, [questionId, navigate]);
 
+  // Fetch chapters when subject is selected
   useEffect(() => {
     if (subject) {
       axios.get(`http://localhost/WEBQUIZZ/Chucnang/get_chapters.php?subject=${subject}`)
@@ -81,17 +93,27 @@ const EditQuestionPage = () => {
     }
   }, [subject]);
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Check if required fields are filled
+    if (!question || !answers.A || !answers.B || !answers.C || !answers.D) {
+      alert("Vui lòng điền đầy đủ câu hỏi và các đáp án.");
+      return;
+    }
+
+    // Prepare data to send
     const data = {
       macauhoi: questionId,
       noidung: question,
       dokho: difficulty,
       mamonhoc: subject,
       machuong: chapter,
-      answers,
+      answers
     };
 
+    // Send data to backend to update question
     axios.post('http://localhost/WEBQUIZZ/Chucnang/update_cauhoi.php', data)
       .then(res => {
         if (res.data.success) {
@@ -102,13 +124,14 @@ const EditQuestionPage = () => {
         }
       })
       .catch(err => {
-        console.error('Lỗi khi cập nhật câu hỏi:', err);
+        console.error('Lỗi khi cập nhật câu hỏi:', err); // Show error in console
         alert('Lỗi khi cập nhật câu hỏi');
       });
   };
 
+  // Show loading screen while data is being fetched
   if (loading) {
-    return <div>Đang tải dữ liệu...</div>; // Hiển thị khi đang tải dữ liệu
+    return <div>Đang tải dữ liệu...</div>;
   }
 
   return (
